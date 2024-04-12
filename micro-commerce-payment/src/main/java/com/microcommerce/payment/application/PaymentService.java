@@ -41,7 +41,7 @@ public class PaymentService {
                     w.setBalance(w.getBalance() + point);
 
                     pointHistoryRepository.save(
-                            paymentMapper.toPaymentHistory(userId, point, type, txId, Timestamp.valueOf(LocalDateTime.now()))
+                            paymentMapper.toPaymentHistory(userId, point, type, txId, LocalDateTime.now())
                     );
                 },
                 () -> {

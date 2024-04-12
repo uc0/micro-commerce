@@ -5,7 +5,7 @@ import com.microcommerce.payment.domain.entity.PaymentHistory;
 import com.microcommerce.payment.domain.entity.Wallet;
 import org.mapstruct.Mapper;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Mapper(componentModel = "spring")
 public interface PaymentMapper {
@@ -13,6 +13,6 @@ public interface PaymentMapper {
 //    @Mapping(target = "id", ignore = true)
     Wallet toWallet(Long userId, int balance);
 
-    PaymentHistory toPaymentHistory(Long userId, int point, PointTxType type, String txId, Timestamp timestamp);
+    PaymentHistory toPaymentHistory(Long userId, int point, PointTxType type, String txId, LocalDateTime timestamp);
 
 }
