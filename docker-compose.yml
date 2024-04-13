@@ -129,10 +129,25 @@ services:
         condition: service_started
       kafka-1:
         condition: service_started
-      kafka-2:
+#      kafka-2:
+#        condition: service_started
+#      kafka-3:
+#        condition: service_started
+      service-discovery:
         condition: service_started
-      kafka-3:
+      api-gateway:
         condition: service_started
+
+  web-notification-service:
+    container_name: micro-commerce-web-notification
+    build:
+      context: ./micro-commerce-web-notification
+      dockerfile: Dockerfile
+    environment:
+      USE_PROFILE: dev
+    networks:
+      - micro-commerce-network
+    depends_on:
       service-discovery:
         condition: service_started
       api-gateway:
@@ -156,46 +171,46 @@ services:
     environment:
       - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
       - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka-1:9092
-
-  kafka-2:
-    image: bitnami/kafka:3.6.1
-    container_name: kafka-2
-    depends_on:
-      - zookeeper
-    networks:
-      - micro-commerce-network
-    environment:
-      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka-2:9092
-
-  kafka-3:
-    image: bitnami/kafka:3.6.1
-    container_name: kafka-3
-    depends_on:
-      - zookeeper
-    networks:
-      - micro-commerce-network
-    environment:
-      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka-3:9092
-
-  kafka-ui:
-    image: provectuslabs/kafka-ui
-    container_name: kafka-ui
-    depends_on:
-      - zookeeper
-      - kafka-1
-      - kafka-2
-      - kafka-3
-    networks:
-      - micro-commerce-network
-    ports:
-      - "8989:8080"
-    restart: always
-    environment:
-      - KAFKA_CLUSTERS_0_NAME=local
-      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka-1:9092,kafka-2:9092,kafka-3:9092
-      - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
+#
+#  kafka-2:
+#    image: bitnami/kafka:3.6.1
+#    container_name: kafka-2
+#    depends_on:
+#      - zookeeper
+#    networks:
+#      - micro-commerce-network
+#    environment:
+#      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+#      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka-2:9092
+#
+#  kafka-3:
+#    image: bitnami/kafka:3.6.1
+#    container_name: kafka-3
+#    depends_on:
+#      - zookeeper
+#    networks:
+#      - micro-commerce-network
+#    environment:
+#      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+#      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka-3:9092
+#
+#  kafka-ui:
+#    image: provectuslabs/kafka-ui
+#    container_name: kafka-ui
+#    depends_on:
+#      - zookeeper
+#      - kafka-1
+#      - kafka-2
+#      - kafka-3
+#    networks:
+#      - micro-commerce-network
+#    ports:
+#      - "8989:8080"
+#    restart: always
+#    environment:
+#      - KAFKA_CLUSTERS_0_NAME=local
+#      - KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS=kafka-1:9092,kafka-2:9092,kafka-3:9092
+#      - KAFKA_CLUSTERS_0_ZOOKEEPER=zookeeper:2181
 
 networks:
   micro-commerce-network:
