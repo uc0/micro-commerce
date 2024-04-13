@@ -1,12 +1,9 @@
 package com.microcommerce.orderconsumer.domain.constant;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+public interface KafkaTopic {
 
-@Getter
-@AllArgsConstructor
-public class KafkaTopic {
-    
-    public static final String ORDER = "ORDER";
+    String ORDER = "ORDER";
+
+    String SEND_NOTIFICATION = "SEND-NOTIFICATION";
 
 }
