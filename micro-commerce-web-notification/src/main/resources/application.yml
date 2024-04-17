@@ -6,12 +6,15 @@ spring:
     name: micro-commerce-web-notification
 
   kafka:
+    bootstrap-servers: kafka-1:9092
     producer:
       bootstrap-servers: kafka-1:9092
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-    consumer:
-      group-id: web-notification-1
+    retry:
+      topic:
+        enabled: true
+
 eureka:
   instance:
     instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}

@@ -21,11 +21,18 @@ public class WebNotificationConsumer {
 
     private final WebNotificationService webNotificationService;
 
+
     @KafkaListener(topics = "SEND-NOTIFICATION")
     public void order(final ConsumerRecord<String, String> record, final Acknowledgment acknowledgment) {
         final NotificationMessage message;
         try {
             message = objectMapper.readValue(record.value(), NotificationMessage.class);
+
+            // TODO: consumer retry test code
+//            if (message != null) {
+//                throw new RuntimeException("test exception");
+//            }
+
             log.info("consume message: {}", message.toString());
             log.info("record info: {}", record.offset());
 
@@ -38,8 +45,8 @@ public class WebNotificationConsumer {
             log.error("web notification error: {}", e.getMessage());
         } catch (final Exception e) {
             log.error("unknown error: {}", e.getMessage());
-        } finally {
-            log.info("finally run?");
+        }
+        finally {
             acknowledgment.acknowledge();
         }
     }
