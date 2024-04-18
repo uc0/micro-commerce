@@ -53,18 +53,18 @@ public class KafkaConsumerConfig {
         return factory;
     }
 
-    @Bean
-    public RetryTopicConfiguration retryTopicConfig(KafkaTemplate<String, String> kafkaTemplate) {
-        return RetryTopicConfigurationBuilder
-                .newInstance()
-                .autoCreateTopicsWith(REPLICATION_NUM_PARTITION, REPLICATION_FACTOR)
-                .maxAttempts(RETRY_COUNT)
-                .retryOn(Exception.class)
-                .fixedBackOff(BACK_OFF_PERIOD)
-                .listenerFactory(kafkaListenerContainerFactory())
-                .setTopicSuffixingStrategy(TopicSuffixingStrategy.SUFFIX_WITH_INDEX_VALUE)
-                .create(kafkaTemplate);
-    }
+//    @Bean
+//    public RetryTopicConfiguration retryTopicConfig(KafkaTemplate<String, String> kafkaTemplate) {
+//        return RetryTopicConfigurationBuilder
+//                .newInstance()
+//                .autoCreateTopicsWith(REPLICATION_NUM_PARTITION, REPLICATION_FACTOR)
+//                .maxAttempts(RETRY_COUNT)
+//                .retryOn(Exception.class)
+//                .fixedBackOff(BACK_OFF_PERIOD)
+//                .listenerFactory(kafkaListenerContainerFactory())
+//                .setTopicSuffixingStrategy(TopicSuffixingStrategy.SUFFIX_WITH_INDEX_VALUE)
+//                .create(kafkaTemplate);
+//    }
 
 
 }
