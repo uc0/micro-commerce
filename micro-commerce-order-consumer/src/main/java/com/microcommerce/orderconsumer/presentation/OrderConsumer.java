@@ -30,7 +30,7 @@ public class OrderConsumer {
         final OrderRecord order;
         try {
             order = objectMapper.readValue(record.value(), OrderRecord.class);
-            log.debug("consume message: {}", order.toString());
+            log.info("consume message: {}", order.toString());
 
             orderService.order(orderMapper.OrderRecordToVo(order));
         } catch (final JsonProcessingException e) {

@@ -1,6 +1,8 @@
 package com.microcommerce.orderconsumer.application;
 
+import com.microcommerce.orderconsumer.domain.constant.KafkaTopic;
 import com.microcommerce.orderconsumer.domain.dto.feign.req.PaymentReqDto;
+import com.microcommerce.orderconsumer.domain.dto.message.NotificationMessage;
 import com.microcommerce.orderconsumer.domain.entity.OrderBasic;
 import com.microcommerce.orderconsumer.domain.entity.OrderDetail;
 import com.microcommerce.orderconsumer.domain.enums.OrderDetailStatus;
@@ -9,6 +11,7 @@ import com.microcommerce.orderconsumer.exception.OrderException;
 import com.microcommerce.orderconsumer.exception.OrderExceptionCode;
 import com.microcommerce.orderconsumer.infrastructure.feign.PaymentClient;
 import com.microcommerce.orderconsumer.infrastructure.feign.ProductClient;
+import com.microcommerce.orderconsumer.infrastructure.kafka.KafkaProducer;
 import com.microcommerce.orderconsumer.infrastructure.repository.OrderDetailRepository;
 import com.microcommerce.orderconsumer.infrastructure.repository.OrderRepository;
 import com.microcommerce.orderconsumer.mapper.OrderMapper;
@@ -34,6 +37,8 @@ public class OrderService {
     private final PaymentClient paymentClient;
 
     private final OrderMapper orderMapper;
+
+    private final KafkaProducer kafkaProducer;
 
     public void order(final OrderVo vo) {
         // 같은 사용자가 3초 동안 두번 이상의 주문을 넣으면 거절
@@ -113,6 +118,14 @@ public class OrderService {
 
         // 상세 주문 저장
         orderDetailRepository.saveAll(orderDetails);
+        kafkaProducer.send(
+                KafkaTopic.SEND_NOTIFICATION,
+                new NotificationMessage(vo.userId(), "주문 성공", "주문 성공", true, true, true)
+        );
+    }
+
+    private void sendOrderNotification() {
+
     }
 
 }
