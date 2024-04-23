@@ -6,6 +6,7 @@ import com.microcommerce.member.domain.dto.res.SignInResDto;
 import com.microcommerce.member.domain.dto.res.SignUpResDto;
 import com.microcommerce.member.domain.entity.Member;
 import com.microcommerce.member.domain.enums.MemberType;
+import com.microcommerce.member.domain.vo.UpdateMemberVo;
 import com.microcommerce.member.exception.MemberException;
 import com.microcommerce.member.infrastructure.repository.MemberRepository;
 import com.microcommerce.member.util.CustomPasswordEncoder;
@@ -91,5 +92,18 @@ class MemberServiceTest {
         Assertions.assertThrows(MemberException.class, () -> memberService.signIn(req));
     }
 
+    @DisplayName("프로필 정보 수정 테스트")
+    @Test
+    void updateMember() {
+        final String editedName = "변경 후 이름";
+        final String editedPhoneNumber = "010-9999-9999";
+
+        Mockito.when(memberRepository.findById(1L)).thenReturn(Optional.of(newMember));
+
+        final UpdateMemberVo vo = new UpdateMemberVo(1L, editedName, editedPhoneNumber);
+        memberService.updateProfile(vo);
+        assertThat(newMember.getName()).isEqualTo(editedName);
+        assertThat(newMember.getPhoneNumber()).isEqualTo(editedPhoneNumber);
+    }
 
 }
