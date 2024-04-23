@@ -30,13 +30,12 @@ public class WebNotificationService {
         sseEmitter.onCompletion(() -> sseEmitters.remove(userId));
         sseEmitter.onTimeout(() -> sseEmitters.remove(userId));
 
-        try {
-            sseEmitter.send(
-                    SseEmitter.event()
-                            .id("")
-                            .name(CONNECTION_ESTABLISHED_MSG)
-                            .data(CONNECTION_ESTABLISHED_MSG)
-            );
+            try {
+                sseEmitter.send(
+                        SseEmitter.event()
+                                .name(CONNECTION_ESTABLISHED_MSG)
+                                .data(CONNECTION_ESTABLISHED_MSG)
+                );
         } catch (final IOException exception) {
             throw new NotificationException(NotificationExceptionCode.NOTIFICATION_CONNECTION_ERROR);
         }
