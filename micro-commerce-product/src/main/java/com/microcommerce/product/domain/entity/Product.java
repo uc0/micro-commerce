@@ -4,6 +4,7 @@ import com.microcommerce.product.domain.enums.ProductStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
+@ToString
 @Getter
 @Builder
 @AllArgsConstructor

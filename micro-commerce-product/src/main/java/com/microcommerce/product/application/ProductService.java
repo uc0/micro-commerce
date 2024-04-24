@@ -15,11 +15,12 @@ import com.microcommerce.product.infrastructure.repository.ProductRepository;
 import com.microcommerce.product.mapper.ProductMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -47,11 +48,12 @@ public class ProductService {
         return productMapper.toCreateProductResDto(product);
     }
 
-    public List<ProductResDto> getProducts() {
-        return productRepository.findAll().stream().map(p -> {
-            final ProductImage representativeImage = productImageRepository.findFirstByProductIdOrderByDisplayOrder(p.getId());
-            return productMapper.toProductResDto(p, representativeImage.getUrl());
-        }).toList();
+    public Page<ProductResDto> getProducts(PageRequest pageRequest) {
+        return productRepository.findPageBy(pageRequest)
+                .map(p -> {
+                    final ProductImage representativeImage = productImageRepository.findFirstByProductIdOrderByDisplayOrder(p.getId());
+                    return productMapper.toProductResDto(p, representativeImage.getUrl());
+                });
     }
 
     public List<ProductResDto> getProductsByIds(final List<Long> ids) {

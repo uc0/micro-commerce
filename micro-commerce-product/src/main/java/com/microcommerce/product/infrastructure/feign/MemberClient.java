@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 @FeignClient(name = "micro-commerce-member", fallbackFactory = MemberClientFallbackFactory.class)
 public interface MemberClient {
 
-    @GetMapping(value = "/api/v1/members/{userId}/profile")
+    @GetMapping(value = "/api/v1/members/{userId}")
     ResponseEntity<ProfileResDto> getProfile(@RequestHeader("x-user-id") @PathVariable("userId") Long userId);
 
 }
