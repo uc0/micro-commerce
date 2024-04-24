@@ -3,6 +3,7 @@ package com.microcommerce.product.presentation;
 import com.microcommerce.product.application.ProductService;
 import com.microcommerce.product.domain.dto.req.CreateProductReqDto;
 import com.microcommerce.product.domain.dto.res.CreateProductResDto;
+import com.microcommerce.product.domain.dto.res.PageDto;
 import com.microcommerce.product.domain.dto.res.ProductDetailResDto;
 import com.microcommerce.product.domain.dto.res.ProductResDto;
 import com.microcommerce.product.mapper.ProductMapper;
@@ -35,8 +36,8 @@ public class ProductController {
     }
 
     @GetMapping("/public-api/v1/products")
-    public Page<ProductResDto> getProducts(@RequestParam(required = false, defaultValue = "0") final int page,
-                                           @RequestParam(required = false, defaultValue = "20") final int size) {
+    public PageDto<ProductResDto> getProducts(@RequestParam(required = false, defaultValue = "0") final int page,
+                                              @RequestParam(required = false, defaultValue = "20") final int size) {
         final PageRequest pageRequest = PageRequest.of(page, size);
         return productService.getProducts(pageRequest);
     }

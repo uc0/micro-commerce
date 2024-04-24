@@ -4,11 +4,13 @@ server:
 spring:
   application:
     name: micro-commerce-product
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://mysql:3306/product
     username: root
     password: admin
+
   jpa:
     properties:
       hibernate:
@@ -16,10 +18,20 @@ spring:
         format_sql: true
     hibernate:
       ddl-auto: update
+
   cloud:
     openfeign:
       circuitbreaker:
         enabled: true
+
+
+  cache:
+    type: redis
+
+  data:
+    redis:
+      port: 6379
+      host: product-redis
 
 eureka:
   instance:
