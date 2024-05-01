@@ -3,11 +3,12 @@ package com.microcommerce.member.presentation;
 import com.microcommerce.member.application.MemberService;
 import com.microcommerce.member.domain.dto.req.SignInReqDto;
 import com.microcommerce.member.domain.dto.req.SignUpReqDto;
+import com.microcommerce.member.domain.dto.req.UpdateMemberReqDto;
 import com.microcommerce.member.domain.dto.res.ProfileResDto;
 import com.microcommerce.member.domain.dto.res.SignInResDto;
 import com.microcommerce.member.domain.dto.res.SignUpResDto;
-import com.microcommerce.member.exception.MemberException;
-import com.microcommerce.member.exception.MemberExceptionCode;
+import com.microcommerce.member.mapper.MemberMapper;
+import com.microcommerce.member.util.HeaderCheckUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -21,26 +22,31 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    private final MemberMapper memberMapper;
+
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/public-api/v1/members/sign-up")
     public SignUpResDto signUp(@RequestBody final SignUpReqDto body) {
         return memberService.signUp(body);
     }
 
-    @ResponseStatus(HttpStatus.OK)
     @PostMapping("/public-api/v1/members/sign-in")
     public SignInResDto signIn(@RequestBody final SignInReqDto body) {
         return memberService.signIn(body);
     }
 
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/api/v1/members/{userId}/profile")
+    @GetMapping("/api/v1/members/{userId}")
     public ProfileResDto getProfile(@RequestHeader final HttpHeaders header, @PathVariable("userId") final long userId) {
-        final String tokenUid = header.getFirst("x-user-id");
-        if (!Long.toString(userId).equals(tokenUid)) {
-            throw new MemberException(MemberExceptionCode.FORBIDDEN);
-        }
+        HeaderCheckUtil.checkUserId(header, userId);
         return memberService.getProfile(userId);
+    }
+
+    @PutMapping("/api/v1/members/{userId}")
+    public void updateProfile(@RequestHeader final HttpHeaders header,
+                              @PathVariable("userId") final long userId,
+                              @RequestBody final UpdateMemberReqDto body) {
+        HeaderCheckUtil.checkUserId(header, userId);
+        memberService.updateProfile(memberMapper.toVo(userId, body));
     }
 
 }

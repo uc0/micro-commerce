@@ -6,9 +6,11 @@ import com.microcommerce.member.domain.dto.res.ProfileResDto;
 import com.microcommerce.member.domain.dto.res.SignInResDto;
 import com.microcommerce.member.domain.dto.res.SignUpResDto;
 import com.microcommerce.member.domain.entity.Member;
+import com.microcommerce.member.domain.vo.UpdateMemberVo;
 import com.microcommerce.member.exception.MemberException;
 import com.microcommerce.member.exception.MemberExceptionCode;
 import com.microcommerce.member.infrastructure.repository.MemberRepository;
+import com.microcommerce.member.mapper.MemberMapper;
 import com.microcommerce.member.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +30,8 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
 
     private final JwtUtil jwtUtil;
+
+    private final MemberMapper memberMapper;
 
     @Transactional
     public SignUpResDto signUp(final SignUpReqDto body) {
@@ -56,6 +60,17 @@ public class MemberService {
     public ProfileResDto getProfile(final Long userId) {
         return memberRepository.findById(userId)
                 .map(ProfileResDto::getInstance)
+                .orElseThrow(() -> new MemberException(MemberExceptionCode.INVALID_USER_INFO));
+    }
+
+    public void updateProfile(final UpdateMemberVo vo) {
+        memberRepository.findById(vo.userId())
+                .map(m -> {
+                    m.setName(vo.name());
+                    m.setPhoneNumber(vo.phoneNumber());
+                    memberRepository.save(m);
+                    return m;
+                })
                 .orElseThrow(() -> new MemberException(MemberExceptionCode.INVALID_USER_INFO));
     }
 

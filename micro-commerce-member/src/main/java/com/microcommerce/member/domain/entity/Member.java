@@ -2,10 +2,7 @@ package com.microcommerce.member.domain.entity;
 
 import com.microcommerce.member.domain.enums.MemberType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @Builder
@@ -24,9 +21,11 @@ public class Member extends BaseEntity {
     @Column(length = 100, nullable = false)
     private String password;
 
+    @Setter
     @Column(length = 30, nullable = false)
     private String name;
 
+    @Setter
     @Column(length = 20, nullable = false)
     private String phoneNumber;
 

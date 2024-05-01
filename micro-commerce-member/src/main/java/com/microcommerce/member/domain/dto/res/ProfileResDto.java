@@ -7,15 +7,6 @@ import lombok.Builder;
 @Builder
 public record ProfileResDto(String email, String name, String phoneNumber, MemberType type) {
 
-    public static ProfileResDto getInstance(String email, String name, String phoneNumber, MemberType type) {
-        return ProfileResDto.builder()
-                .email(email)
-                .name(name)
-                .phoneNumber(phoneNumber)
-                .type(type)
-                .build();
-    }
-
     public static ProfileResDto getInstance(Member member) {
         return ProfileResDto.builder()
                 .email(member.getEmail())
