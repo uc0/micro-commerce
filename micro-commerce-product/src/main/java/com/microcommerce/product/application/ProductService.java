@@ -3,6 +3,7 @@ package com.microcommerce.product.application;
 import com.microcommerce.product.domain.dao.MemberClientDao;
 import com.microcommerce.product.domain.dto.feign.res.ProfileResDto;
 import com.microcommerce.product.domain.dto.res.CreateProductResDto;
+import com.microcommerce.product.domain.dto.res.PageDto;
 import com.microcommerce.product.domain.dto.res.ProductDetailResDto;
 import com.microcommerce.product.domain.dto.res.ProductResDto;
 import com.microcommerce.product.domain.entity.Product;
@@ -15,11 +16,13 @@ import com.microcommerce.product.infrastructure.repository.ProductRepository;
 import com.microcommerce.product.mapper.ProductMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -47,11 +50,14 @@ public class ProductService {
         return productMapper.toCreateProductResDto(product);
     }
 
-    public List<ProductResDto> getProducts() {
-        return productRepository.findAll().stream().map(p -> {
-            final ProductImage representativeImage = productImageRepository.findFirstByProductIdOrderByDisplayOrder(p.getId());
-            return productMapper.toProductResDto(p, representativeImage.getUrl());
-        }).toList();
+    @Cacheable(value = "GetProducts", key = "#pageRequest", cacheManager = "cacheManager")
+    public PageDto<ProductResDto> getProducts(PageRequest pageRequest) {
+        final Page<ProductResDto> products = productRepository.findPageBy(pageRequest)
+                .map(p -> {
+                    final ProductImage representativeImage = productImageRepository.findFirstByProductIdOrderByDisplayOrder(p.getId());
+                    return productMapper.toProductResDto(p, representativeImage.getUrl());
+                });
+        return new PageDto<>(products.getContent(), pageRequest.getPageNumber(), pageRequest.getPageSize(), products.getTotalElements());
     }
 
     public List<ProductResDto> getProductsByIds(final List<Long> ids) {
